@@ -8,7 +8,7 @@ import styles from "../styles/glitchFrenchWave.module.css"
 
 export default data => {
 	const post = data.data.file.childMarkdownRemark
-	console.log("Data: ", data.data)
+	// console.log("Data: ", data.data)
 	return (
 		<Layout>
 			<div>

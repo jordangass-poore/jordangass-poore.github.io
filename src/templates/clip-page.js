@@ -8,7 +8,7 @@ import BreadCrumb from "../components/BreadCrumb"
 import queryTools from "../utils/queryParsing"
 
 export default data => {
-	console.log("Data: ", data.data)
+	// console.log("Data: ", data.data)
 	var previewImage = false
 	var isFluid = false
 	var clipObj = data.data.clip.clip
@@ -42,35 +42,41 @@ export default data => {
 
 	var publisherUrl = ""
 	var originalContent, archivedContent, publishedBy
-	if (clipObj.isBasedOn) {
-		const theSourceUrl = new URL(clipObj.isBasedOn)
-		publisherUrl = theSourceUrl.origin
-		publishedBy = (
-			<h4 className="source-with-origin-url">
-				Published by: <br />{" "}
-				<a href={publisherUrl} target="_blank" rel="noopener noreferrer">
-					{clipObj.publishedBy}
-				</a>
-			</h4>
-		)
+	try {
+		if (clipObj.isBasedOn) {
+			const theSourceUrl = new URL(clipObj.isBasedOn)
+			publisherUrl = theSourceUrl.origin
+			publishedBy = (
+				<h4 className="source-with-origin-url">
+					Published by: <br />{" "}
+					<a href={publisherUrl} target="_blank" rel="noopener noreferrer">
+						{clipObj.publishedBy}
+					</a>
+				</h4>
+			)
 
-		originalContent = (
-			<span className={styles.clipLink}>
-				<a href={clipObj.isBasedOn}>View clip</a> |
-			</span>
-		)
-	} else {
-		publisherUrl = ""
-		publishedBy = (
-			<h4 className="source-without-origin-url">
-				Published by: <br /> {clipObj.publishedBy}
-			</h4>
-		)
-		originalContent = (
-			<span className={styles.clipLink}>
-				Original Clip No Longer Available |
-			</span>
-		)
+			originalContent = (
+				<span className={styles.clipLink}>
+					<a href={clipObj.isBasedOn}>View clip</a> |
+				</span>
+			)
+		} else {
+			publisherUrl = ""
+			publishedBy = (
+				<h4 className="source-without-origin-url">
+					Published by: <br /> {clipObj.publishedBy}
+				</h4>
+			)
+			originalContent = (
+				<span className={styles.clipLink}>
+					Original Clip No Longer Available |
+				</span>
+			)
+		}
+	} catch (e) {
+		console.log('Clip build error occured ', e);
+		publishedBy = (<span></span>)
+		originalContent = (<span></span>)
 	}
 	var archiveFile = ""
 	if (data.data.mediaFile && data.data.mediaFile.publicURL) {
