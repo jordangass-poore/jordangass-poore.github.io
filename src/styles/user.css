@@ -1,0 +1,156 @@
+#topid {
+
+	text-align:center;
+
+}
+
+#topid h2 {
+
+	font-size: 14px; font-size: 2rem; margin-bottom: 4px; 
+
+}
+
+#topid h5 {
+
+	font-size: 11px; font-size: 1.2rem; margin-bottom: 3px; font-weight: bold;
+	
+}
+
+.edlocal {
+
+	text-align:right;
+	
+}
+
+.left {
+
+	float:left;
+	
+}
+
+.right {
+
+	float:right;
+	
+}
+
+.clearfloat {
+
+	clear:both;
+	
+}
+
+.location {
+
+	margin: 0 6px 0 6px;
+	margin-top: 0px;
+	
+}
+
+ul.jobaccomp {
+
+	list-style-type:disc;
+	list-style-position: outside;
+	margin-left:26px;
+	margin-bottom: 10px
+
+}
+
+hr {
+
+	border-width: 1px 0 0;
+	margin-bottom: 1px;
+	border-color: black;
+
+}
+
+.promoted {
+
+	margin-left: 26px;
+
+}
+
+.joblocation {
+
+	font-style: italic;
+	font-size: 12px; 
+	font-size: 1.2rem; 
+
+}
+
+.jobtitle {
+
+	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-weight: bold;
+	font-size: 12px; 
+	font-size: 1.5rem; 
+	margin-bottom: 3px;
+
+}
+
+.item-title {
+
+	font-weight: bold;
+	font-size: 12px; 
+	font-size: 1.2rem; 
+	margin-bottom: 3px;
+
+}
+
+.promoted .jobtitle {
+
+
+	font-size: 11px; 
+	font-size: 1.2rem; 
+
+}
+
+.section-title {
+
+	font-size:12px;
+	font-size:1.4rem;
+	margin-right: 8px;
+	
+}
+
+.details {
+
+	font-style: italic;
+
+}
+
+li {
+
+	margin-bottom:0px;
+
+}
+
+p {
+
+	margin: 0;
+	
+}
+
+.item {
+
+	margin-bottom: 2px;
+
+}
+
+.promoted p {
+
+	margin-bottom: 10px;
+
+}
+
+.degree {
+
+	margin-bottom: 10px;
+
+}
+
+.projects p {
+
+	margin-bottom: 10px;
+
+}
