@@ -46,7 +46,7 @@ export default data => {
 			var topicValid = true
 			if (topicQuery) {
 				topicValid = topic.toLowerCase().includes(topicQuery.toLowerCase())
-				console.log("Topic check addl ", topicValid)
+				// console.log("Topic check addl ", topicValid)
 			}
 
 			var formatValid = true
@@ -67,7 +67,7 @@ export default data => {
 
 	const handleTopicChange = event => {
 		const topicQuery = event.target.value
-		console.log("Topic change: ", event)
+		// console.log("Topic change: ", event)
 		// this is how we get all of our posts
 		const edges = edgeList || []
 		const { query, formatQuery } = state

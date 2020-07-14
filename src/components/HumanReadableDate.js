@@ -7,7 +7,7 @@ Date.prototype.addHours = function(h) {
 
 export default ({ date }) => {
 	var dateObj = new Date(date)
-	console.log(date, dateObj)
+	// console.log(date, dateObj)
 	// Adjust pure date input for GMT offset of Texas
 	dateObj.addHours(5)
 	var dateOptions = {

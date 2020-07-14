@@ -9,7 +9,7 @@ import SEO from "../components/SEO"
 import HumanReadableDate from "../components/HumanReadableDate"
 
 export default ({ data, pageContext }) => {
-	console.log("Data: ", data, pageContext)
+	// console.log("Data: ", data, pageContext)
 	var previewImage = false
 	var isFluid = false
 	var clipObj = data.clip.clip

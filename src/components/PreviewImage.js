@@ -34,7 +34,7 @@ const PreviewImage = props => {
 	} else {
 		previewEl = <div className={styles.noImg}></div>
 	}
-	if (path.basename(origImage) == "Transparent-l.png") {
+	if (!origImage || typeof origImage !== 'string' || path.basename(origImage) == "Transparent-l.png") {
 		previewEl = <div className={styles.noImg}></div>
 	}
 

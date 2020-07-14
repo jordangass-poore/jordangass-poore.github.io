@@ -4,20 +4,10 @@ import * as ReactLeaflet from "react-leaflet"
 const { Map: LeafletMap, TileLayer, ZoomControl } = ReactLeaflet
 import { useMapServices, useRefEffect } from "../../hooks"
 import { isDomAvailable } from "../../utils/domHandlers"
-import Leaflet from "leaflet"
+import * as Leaflet from "leaflet"
 import "leaflet/dist/leaflet.css"
 
 const DEFAULT_MAP_SERVICE = "OpenStreetMap"
-
-Leaflet.Icon.Default.imagePath = "../node_modules/leaflet"
-
-delete Leaflet.Icon.Default.prototype._getIconUrl
-
-Leaflet.Icon.Default.mergeOptions({
-	iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
-	iconUrl: require("leaflet/dist/images/marker-icon.png"),
-	shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
-})
 
 /**
  * https://github.com/colbyfayock/gatsby-starter-leaflet/blob/master/src/components/Map.js

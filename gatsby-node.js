@@ -64,7 +64,7 @@ exports.sourceNodes = async ({ boundActionCreators }) => {
 			}
 			if (clip) {
 				var clipDescription = clip.description ? clip.description : clip.title
-				console.log("Post Clip Node processing with Markdown", clip)
+				//console.log("Post Clip Node processing with Markdown", clip)
 				createNode({
 					id: Buffer.from(clip.title).toString("base64"),
 					parent: null, // or null if it's a source node without a parent
@@ -233,7 +233,7 @@ exports.onCreateNode = async ({ node, getNode, reporter, cache, actions }) => {
 	if (node.sourceInstanceName === "basePages") {
 		const { createNodeField } = actions
 		var slug = createFilePath({ node, getNode, basePath: `` })
-		console.log("slug: ", slug)
+		// console.log("slug: ", slug)
 		createNodeField({
 			node,
 			name: `slug`,
@@ -330,7 +330,7 @@ exports.onCreateNode = async ({ node, getNode, reporter, cache, actions }) => {
 
 		var fileResults = (function() {
 			var fileName = node.base
-			console.log("raw file location: ", `${__dirname}/_projects/${fileName}`)
+			// console.log("raw file location: ", `${__dirname}/_projects/${fileName}`)
 			var rawFile = fs
 				.readFileSync(`${__dirname}/_projects/${fileName}`)
 				.toString("UTF8")
@@ -393,10 +393,7 @@ exports.createPages = async ({ graphql, actions }) => {
 			var isList = false
 			var pageObj = {}
 			if (node.childMarkdownRemark.frontmatter.isList) {
-				console.log(
-					"List Template created: ",
-					node.childMarkdownRemark.frontmatter.isList
-				)
+
 				isList = true
 				queryFilter = node.childMarkdownRemark.frontmatter.contentType
 				pageObj = {
@@ -417,7 +414,7 @@ exports.createPages = async ({ graphql, actions }) => {
 				const highlights = node.childMarkdownRemark.frontmatter.highlight.split(
 					" "
 				)
-				console.log("Highlights Template created: ", highlights)
+				// console.log("Highlights Template created: ", highlights)
 				isList = true
 				queryFilter = node.childMarkdownRemark.frontmatter.contentType
 				pageObj = {
@@ -446,6 +443,8 @@ exports.createPages = async ({ graphql, actions }) => {
 				}
 			}
 			createPage(pageObj)
+		} else {
+			console.log('File-based page missing path', node)
 		}
 	})
 	// console.log(JSON.stringify(result, null, 4))
@@ -604,7 +603,7 @@ exports.createPages = async ({ graphql, actions }) => {
 						: null,
 				}
 			} catch (e) {
-				// console.log('Clip page build error on previous: ', clipObj, e)
+				console.log('achievement page build error on previous: ', e)
 				previous = {
 					id: null,
 					slug: null,
@@ -622,7 +621,7 @@ exports.createPages = async ({ graphql, actions }) => {
 						: null,
 				}
 			} catch (e) {
-				// console.log('Clip page build error on next: ', e)
+				console.log('achievement page build error on next: ', e)
 				next = {
 					id: null,
 					slug: null,
@@ -674,10 +673,10 @@ exports.createPages = async ({ graphql, actions }) => {
 	`)
 	// console.log('Projects: ', projectsFilesQ.data.allFile);
 	projectsFilesQ.data.allFile.nodes.forEach(projectsObj => {
-		console.log("a project", projectsObj, projectsObj.fields)
+		// console.log("a project", projectsObj, projectsObj.fields)
 		// var node = projectsObj.node;
 		if (projectsObj.fields && projectsObj.fields.slug) {
-			console.log("a project slug", projectsObj.fields.slug)
+			//console.log("a project slug", projectsObj.fields.slug)
 			createPage({
 				path: projectsObj.fields.slug,
 				component: path.resolve(`./src/templates/static-page.js`),

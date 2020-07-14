@@ -75,7 +75,7 @@ export default data => {
 					paddingLeft: "20px",
 				}}
 			>
-				Achievements: Awards
+				Achievements
 			</BreadCrumb>
 			<div>
 				<div id={stylesNodes.allNodesHeader}>
