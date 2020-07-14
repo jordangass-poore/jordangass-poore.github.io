@@ -4,7 +4,16 @@
  * See: https://www.gatsbyjs.org/docs/gatsby-config/
  */
 
+var configs = require("./config")
+configs.dateModified = new Date().toISOString()
+
 module.exports = {
+	// What's going on here? https://www.christopherbiscardi.com/post/getting-gatsby-images-from-generated-fields
+	// and https://www.gatsbyjs.org/docs/gatsby-config/#mapping-node-types
+	mapping: {
+		"Clip.fields.imgObj": `File.absolutePath`,
+		"Achievement.fields.imgObj": `File.absolutePath`,
+	},
 	plugins: [
 		{
 			resolve: "gatsby-source-filesystem",
@@ -23,17 +32,15 @@ module.exports = {
 		{
 			resolve: "gatsby-source-filesystem",
 			options: {
-				name: "basePages",
-				path: `${__dirname}/_pages/`,
+				name: "siteConfigs",
+				path: `${__dirname}/config/`,
 			},
 		},
 		{
 			resolve: "gatsby-source-filesystem",
 			options: {
-				id: "configFile",
-				name: "configFile",
-				path: `${__dirname}/config/`,
-				description: "SiteConfiguration",
+				name: "basePages",
+				path: `${__dirname}/_pages/`,
 			},
 		},
 		{
@@ -41,6 +48,13 @@ module.exports = {
 			options: {
 				path: `${__dirname}/_images/`,
 				name: "images",
+			},
+		},
+		{
+			resolve: `gatsby-source-filesystem`,
+			options: {
+				path: `${__dirname}/_clips/`,
+				name: "mdClips",
 			},
 		},
 		{
@@ -58,10 +72,18 @@ module.exports = {
 			},
 		},
 		"gatsby-transformer-remark",
-		"gatsby-transformer-json",
-		"gatsby-plugin-react-helmet",
+		"gatsby-remark-relative-images",
 		"gatsby-plugin-sharp",
 		"gatsby-transformer-sharp",
+		"gatsby-transformer-json",
+		"gatsby-plugin-sass",
+		"gatsby-plugin-react-helmet",
+		{
+			resolve: "gatsby-plugin-react-leaflet",
+			options: {
+				linkStyles: true, // (default: true) Enable/disable loading stylesheets via CDN
+			},
+		},
 		{
 			resolve: `gatsby-plugin-prefetch-google-fonts`,
 			options: {
@@ -84,12 +106,5 @@ module.exports = {
 			},
 		},
 	],
-	siteMetadata: {
-		title: "Jordan Gass-Poore' Portfolio Site",
-		description: "Portfolio",
-		name: "Jordan Gass-Poore'",
-		bigName: "Jordan <br />Gass-Poore'",
-		intro:
-			"This website is a professional profile. You can find examples of my work as well as lists of my qualifications in the menu to the left.",
-	},
+	siteMetadata: configs,
 }

@@ -5,32 +5,47 @@ import Link from "gatsby-link"
 import Img from "gatsby-image"
 import styles from "../styles/glitchFrenchWave.module.css"
 import BreadCrumb from "../components/BreadCrumb"
-import queryTools from "../utils/queryParsing"
+import SEO from "../components/SEO"
+import HumanReadableDate from "../components/HumanReadableDate"
 
-export default data => {
-	// console.log("Data: ", data.data)
+export default ({ data, pageContext }) => {
+	console.log("Data: ", data, pageContext)
 	var previewImage = false
 	var isFluid = false
-	var clipObj = data.data.clip.clip
+	var clipObj = data.clip.clip
+	var queryResult = data
 	var origImage = ""
-	if (data.data.previewImage) {
+	if (queryResult.previewImage) {
 		if (
-			data.data.previewImage.childImageSharp &&
-			data.data.previewImage.childImageSharp.fluid
+			queryResult.previewImage.childImageSharp &&
+			queryResult.previewImage.childImageSharp.fluid
 		) {
-			previewImage = data.data.previewImage.childImageSharp.fluid
+			previewImage = queryResult.previewImage.childImageSharp.fluid
 			isFluid = true
-		} else if (data.data.previewImage.publicURL) {
-			previewImage = data.data.previewImage.publicURL
+		} else if (queryResult.previewImage.publicURL) {
+			previewImage = queryResult.previewImage.publicURL
 		}
 	}
-	if (data.data.previewImage && data.data.previewImage.publicURL) {
-		origImage = data.data.previewImage.publicURL
+	if (queryResult.previewImage && queryResult.previewImage.publicURL) {
+		origImage = queryResult.previewImage.publicURL
 	}
 	var previewEl = null
 	if (previewImage && isFluid) {
+		const previewImageObj = Object.assign(
+			{
+				media: `(max-width: 400px)`,
+				key: queryResult.previewImage.childImageSharp.id,
+			},
+			queryResult.previewImage.childImageSharp.fluid
+		)
+		const sources = [previewImageObj]
 		previewEl = (
-			<Img fluid={previewImage} alt="" className={styles.bbImageWrapper} />
+			<Img
+				key={queryResult.previewImage.childImageSharp.id}
+				fluid={sources}
+				alt=""
+				className={styles.bbImageWrapper}
+			/>
 		)
 	} else if (previewImage) {
 		previewEl = (
@@ -57,7 +72,9 @@ export default data => {
 
 			originalContent = (
 				<span className={styles.clipLink}>
-					<a href={clipObj.isBasedOn}>View clip</a> |
+					<a href={clipObj.isBasedOn} target="_blank" rel="noopener noreferrer">
+						View clip
+					</a>
 				</span>
 			)
 		} else {
@@ -69,22 +86,23 @@ export default data => {
 			)
 			originalContent = (
 				<span className={styles.clipLink}>
-					Original Clip No Longer Available |
+					Original Clip No Longer Available
 				</span>
 			)
 		}
 	} catch (e) {
-		console.log('Clip build error occured ', e);
-		publishedBy = (<span></span>)
-		originalContent = (<span></span>)
+		console.log("Clip build error occured ", e)
+		publishedBy = <span></span>
+		originalContent = <span></span>
 	}
 	var archiveFile = ""
-	if (data.data.mediaFile && data.data.mediaFile.publicURL) {
-		archiveFile = data.data.mediaFile;
+	if (queryResult.mediaFile && queryResult.mediaFile.publicURL) {
+		archiveFile = queryResult.mediaFile
 	}
-	if (clipObj.media) {
+	if (clipObj.media && archiveFile.publicURL) {
 		archivedContent = (
 			<span className={styles.clipLink}>
+				<span className={styles.spacer}>|</span>
 				<a
 					href={archiveFile.publicURL}
 					target="_blank"
@@ -97,19 +115,88 @@ export default data => {
 	} else {
 		archivedContent = <span className={styles.clipLink}></span>
 	}
-	var dateObj = new Date(clipObj.date);
-	var dateOptions = {
-		weekday: "long",
-		year: "numeric",
-		month: "long",
-		day: "numeric",
+	var humanReadableDate = <HumanReadableDate date={clipObj.date} />
+	var homeLink = (
+		<Link to={"/clips"} key="clipsHomepage">
+			<span
+				style={{
+					textDecoration: "underline",
+				}}
+			>
+				All Clips
+			</span>
+		</Link>
+	)
+	var previousLink, nextLink
+	if (pageContext.previous) {
+		previousLink = (
+			<Link
+				to={"/clip/" + pageContext.previous.slug}
+				key={pageContext.previous.id}
+				title={pageContext.previous.title}
+			>
+				<span
+					style={{
+						textDecoration: "underline",
+					}}
+				>
+					Previous Clip
+				</span>
+			</Link>
+		)
+	} else {
+		previousLink = homeLink
 	}
-	var humanReadableDate = dateObj.toLocaleDateString("en-US", dateOptions)
+	if (pageContext.next) {
+		nextLink = (
+			<Link
+				to={"/clip/" + pageContext.next.slug}
+				key={pageContext.next.id}
+				title={pageContext.next.title}
+			>
+				<span
+					style={{
+						textDecoration: "underline",
+					}}
+				>
+					Next Clip
+				</span>
+			</Link>
+		)
+	} else {
+		nextLink = homeLink
+	}
+	let defaultDescription = false
+	if (!clipObj.description && !clipObj.content && !clipObj.description) {
+		defaultDescription = "Work by"
+	}
+	var isType = "website"
+	switch (clipObj.format) {
+		case "text":
+			isType = "NewsArticle"
+			if (clipObj.topic === "Opinion" || clipObj.topic === "PR") {
+				isType = "article"
+			}
+			break
+
+		default:
+			isType = "website"
+			break
+	}
 	return (
 		<Layout>
+			<SEO
+				postMeta={clipObj}
+				postDefaults={{ description: defaultDescription }}
+				postPath={"clip/" + clipObj.slug}
+				isType={isType}
+				typeMeta={{
+					isBasedOn: clipObj.isBasedOn,
+					publisher: publisherUrl,
+					publisher_name: clipObj.publishedBy,
+				}}
+			/>
 			<BreadCrumb
-				siteTitle={queryTools.resolveSiteMetadataEdge("title", data.data)}
-				lastPart="Clip"
 				style={{
 					display: "block",
 					float: "left",
@@ -117,9 +204,11 @@ export default data => {
 					top: "calc(3rem - 34px)",
 					paddingLeft: "20px",
 				}}
-			></BreadCrumb>
-			<div id={data.data.clip.id} className={styles.blackOutBox}>
-				<h1>{data.data.clip.clip.title}</h1>
+			>
+				Clip
+			</BreadCrumb>
+			<div id={queryResult.clip.id} className={styles.blackOutBox}>
+				<h1>{clipObj.title}</h1>
 				<div className={styles.flexRow}>
 					<div className={styles.flexCol}>
 						<div className={styles.bbDataHolder}>
@@ -128,15 +217,19 @@ export default data => {
 							{publishedBy}
 							<div>
 								<strong>Location Published</strong>: {clipObj.location}
-								<br /><br />
+								<br />
+								<br />
 								<strong>Published on</strong>: {humanReadableDate}
+								<br />
+								<br />
+								<strong>Topic</strong>: {clipObj.topic}
 								<br />
 								<br />
 							</div>
 							<div>
-								<strong>About</strong>: {clipObj.description}
+								<strong>Summary</strong>: {clipObj.description}
 								<hr />
-								{clipObj.content}
+								<div dangerouslySetInnerHTML={{ __html: clipObj.content }} />
 								<br />
 								<br />
 							</div>
@@ -147,21 +240,25 @@ export default data => {
 					</div>
 				</div>
 			</div>
+			<BreadCrumb
+				style={{
+					display: "block",
+					float: "left",
+					position: "relative",
+					marginTop: "3rem",
+					paddingLeft: "20px",
+					lineHeight: "4px",
+					paddingBottom: "12px",
+				}}
+			>
+				{previousLink} | {nextLink}
+			</BreadCrumb>
 		</Layout>
 	)
 }
 
 export const query = graphql`
 	query($id: String!, $mainImage: String, $mediaName: String) {
-		allSite {
-			edges {
-				node {
-					siteMetadata {
-						title
-					}
-				}
-			}
-		}
 		clip(id: { eq: $id }) {
 			id
 			clip {
@@ -187,6 +284,7 @@ export const query = graphql`
 				fluid(maxWidth: 400) {
 					src
 				}
+				id
 			}
 		}
 		mediaFile: file(

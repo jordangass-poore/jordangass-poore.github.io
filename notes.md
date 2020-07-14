@@ -164,3 +164,33 @@ query siteMeta {
 }
 ```
 
+```
+<form
+				action="mailto:form@jgasspoore.com"
+				id="mailform"
+				method="get"
+				encType="text/plain"
+			>
+				<div>
+					<label htmlFor="name">
+						Name:
+						<input type="text" name="name" id="name" />
+					</label>
+				</div>
+				<div>
+					<label htmlFor="email">
+						Email:
+						<input type="text" name="email" id="email" />
+					</label>
+				</div>
+				<div>
+					<label>What would you like me to know?:</label>
+					<br />
+					<textarea name="comments" rows="12" cols="35"></textarea>
+				</div>
+				<div>
+					<input type="submit" name="submit" value="Send" />
+					<input type="reset" name="reset" value="Clear Form" />
+				</div>
+			</form>
+```

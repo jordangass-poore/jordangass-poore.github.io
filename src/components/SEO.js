@@ -1,151 +1,122 @@
-import path from 'path';
-import React from 'react';
-import Helmet from 'react-helmet';
-import PropTypes from 'prop-types';
-import config from '../config';
+import path from "path"
+import React from "react"
+import Helmet from "react-helmet"
+import PropTypes from "prop-types"
+import SchemaOrg from "./Meta/SchemaOrg"
+import Twitter from "./Meta/Twitter"
+import OpenGraph from "./Meta/OpenGraph"
+import { useSiteMetadata } from "../hooks/use-site-metadata"
+import styles from "../styles/glitchFrenchWave.module.css"
 
-const getSchemaOrgJSONLD = ({
-	isBlogPost,
-	url,
-	title,
-	image,
-	description,
-	datePublished
-}) => {
-	const schemaOrgJSONLD = [
-		{
-			'@context': 'http://schema.org',
-			'@type': 'WebSite',
-			url,
-			name: title,
-			alternateName: config.title
-		}
-	];
-
-	return isBlogPost
-		? [
-			...schemaOrgJSONLD,
-			{
-				'@context': 'http://schema.org',
-				'@type': 'BreadcrumbList',
-				itemListElement: [
-					{
-						'@type': 'ListItem',
-						position: 1,
-						item: {
-							'@id': url,
-							name: title,
-							image
-						}
-					}
-				]
-			},
-			{
-				'@context': 'http://schema.org',
-				'@type': 'BlogPosting',
-				url,
-				name: title,
-				alternateName: config.title,
-				headline: title,
-				image: {
-					'@type': 'ImageObject',
-					url: image
-				},
-				description,
-				author: {
-					'@type': 'Person',
-					name: 'Aram Zucker-Scharff',
-					description:
-						'Aram Zucker-Scharff is Director for Ad Engineering at Washington Post, lead dev for PressForward and a consultant. Tech solutions for journo problems.',
-					sameAs: 'http://aramzs.github.io/aramzs/',
-					image: {
-						'@type': 'ImageObject',
-						url:
-							'https://pbs.twimg.com/profile_images/539484037765533698/7l6-pKY-_400x400.jpeg'
-					},
-					givenName: 'Aram',
-					familyName: 'Zucker-Scharff',
-					alternateName: 'AramZS',
-					publishingPrinciples: 'http://aramzs.github.io/about/'
-				},
-				publisher: {
-					'@type': 'Organization',
-					url: 'http://aramzs.github.io/aramzs/',
-					logo: config.logo,
-					name: 'Aram Zucker-Scharff'
-				},
-				mainEntityOfPage: {
-					'@type': 'WebSite',
-					'@id': config.url
-				},
-				datePublished
-			}
-		]
-		: schemaOrgJSONLD;
-};
-
-const SEO = ({ postData, postImage, isBlogPost }) => {
-	const postMeta = postData.frontmatter || {};
-
-	const title = postMeta.title || config.title;
-	const description =
-		postMeta.description || postData.excerpt || config.description;
-	const image = `${config.url}${postImage}` || config.image;
-	const url = postMeta.slug
-		? `${config.url}${path.sep}${postMeta.slug}`
-		: config.url;
-	const datePublished = isBlogPost ? postMeta.datePublished : false;
-
-	const schemaOrgJSONLD = getSchemaOrgJSONLD({
-		isBlogPost,
-		url,
+const SEO = ({ postMeta, isType, typeMeta, postPath, postDefaults }) => {
+	const {
 		title,
-		image,
 		description,
-		datePublished
-	});
+		image,
+		name,
+		givenName,
+		familyName,
+		alternateName,
+		url,
+		twitter,
+		fbAppID,
+		keywords,
+		dateModified,
+	} = useSiteMetadata()
 
+	let defaultDescription = false
+	if (postDefaults.description) {
+		defaultDescription = `${postDefaults.description} ${name}`
+	}
+	const pageTitle = postMeta.title || title
+	const pageDescription =
+		postMeta.description ||
+		postMeta.excerpt ||
+		postMeta.content ||
+		defaultDescription ||
+		description
+	const postImage = postMeta.image || image
+	const pageUrl = postPath ? `${url}${path.sep}${postPath}` : url
+	const datePublished = isType === "article" ? postMeta.datePublished : false
+	typeMeta.published_time = datePublished
+	typeMeta.section = postMeta.section || postMeta.topic || postMeta.type
+	typeMeta.author = name
+	let completeKeywords = []
+	if (postMeta.keywords && Array.isArray(postMeta.keywords)) {
+		completeKeywords = postMeta.keywords
+	} else if (postMeta.keywords) {
+		completeKeywords.push(postMeta.keywords)
+	}
+	if (typeMeta.section && !completeKeywords.includes(typeMeta.section)) {
+		completeKeywords.push(typeMeta.section)
+	}
+	const keywordsString = completeKeywords.join(",")
+	const siteImage = image
+	// https://css-tricks.com/its-all-in-the-head-managing-the-document-head-of-a-react-powered-site-with-react-helmet/
 	return (
-		<Helmet>
-			{/* General tags */}
-			<meta name="description" content={description} />
-			<meta name="image" content={image} />
-
-			{/* Schema.org tags */}
-			<script type="application/ld+json">
-				{JSON.stringify(schemaOrgJSONLD)}
-			</script>
-
-			{/* OpenGraph tags */}
-			<meta property="og:url" content={url} />
-			{isBlogPost ? <meta property="og:type" content="article" /> : null}
-			<meta property="og:title" content={title} />
-			<meta property="og:description" content={description} />
-			<meta property="og:image" content={image} />
-			<meta property="fb:app_id" content={config.fbAppID} />
-
-			{/* Twitter Card tags */}
-			<meta name="twitter:card" content="summary_large_image" />
-			<meta name="twitter:creator" content={config.twitter} />
-			<meta name="twitter:title" content={title} />
-			<meta name="twitter:description" content={description} />
-			<meta name="twitter:image" content={image} />
-		</Helmet>
-	);
-};
+		<React.Fragment>
+			<Helmet defer={false}>
+				<body className={styles.fnw} />
+				{/* General tags */}
+				<title>{pageTitle}</title>
+				<meta name="title" content={pageTitle} />
+				<meta name="description" content={pageDescription} />
+				<meta name="image" content={postImage} />
+				<meta name="author" content={name} />
+				<meta name="keywords" content={keywordsString} />
+			</Helmet>
+			<Twitter
+				twitter={twitter}
+				title={pageTitle}
+				description={pageDescription}
+				image={postImage}
+			/>
+			<OpenGraph
+				url={pageUrl}
+				title={pageTitle}
+				description={pageDescription}
+				image={postImage}
+				fbAppId={fbAppID}
+				isType={isType}
+				siteName={title}
+				typeMeta={typeMeta}
+				author={name}
+				keywords={completeKeywords}
+			/>
+			<SchemaOrg
+				url={pageUrl}
+				siteUrl={url}
+				siteDescription={description}
+				siteImage={siteImage}
+				title={pageTitle}
+				description={pageDescription}
+				image={postImage}
+				fbAppId={fbAppID}
+				isType={isType}
+				siteName={title}
+				typeMeta={typeMeta}
+				author={name}
+				dateModified={dateModified}
+				datePublished={postMeta.date}
+				keywords={completeKeywords}
+				givenName={givenName}
+				familyName={familyName}
+				alternateName={alternateName}
+			/>
+		</React.Fragment>
+	)
+}
 
 SEO.propTypes = {
-	isBlogPost: PropTypes.bool,
-	postData: PropTypes.shape({
-		frontmatter: PropTypes.any,
-		excerpt: PropTypes.any
-	}).isRequired,
-	postImage: PropTypes.string
-};
+	postMeta: PropTypes.any,
+	typeMeta: PropTypes.any.isRequired,
+	isType: PropTypes.string,
+	postPath: PropTypes.string,
+}
 
 SEO.defaultProps = {
-	isBlogPost: false,
-	postImage: null
-};
+	isType: "article",
+	postImage: null,
+}
 
-export default SEO;
+export default SEO
