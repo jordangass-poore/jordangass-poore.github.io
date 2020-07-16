@@ -1,0 +1,22 @@
+.promoted p {
+
+	margin-bottom: 6px;
+	line-height: .5;
+
+}
+
+body {
+
+	color: black;
+	
+}
+
+.appear {
+
+	visibility:hidden;
+	height: 0;
+	width: 0;
+	margin: 0;
+	padding: 0;
+
+}

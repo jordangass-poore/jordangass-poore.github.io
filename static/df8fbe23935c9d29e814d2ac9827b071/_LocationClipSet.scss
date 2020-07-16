@@ -1,0 +1,15 @@
+.location-clip-set {
+	display: none;
+}
+
+.location-clip-set#default {
+	display: block;
+}
+
+.location-clip-set.hidden {
+	display: none !important;
+}
+
+.location-clip-set.shown {
+	display: block !important;
+}
