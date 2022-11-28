@@ -8212,7 +8212,7 @@ module.exports = warning;
 /*! exports provided: data, default */
 /***/ (function(module) {
 
-module.exports = JSON.parse("{\"data\":{\"site\":{\"siteMetadata\":{\"title\":\"Jordan Gass-Poore' Portfolio Site\",\"description\":\"A journalist's portfolio site\",\"url\":\"http://localhost:8000\",\"name\":\"Jordan Gass-Poore'\",\"twitter\":\"@jgasspoore\",\"image\":\"static/defaultOfJordan.jpg\",\"htmlDescription\":\"An HTML description\",\"givenName\":\"Jordan\",\"fbAppID\":\"\",\"familyName\":\"Gass-Poore'\",\"alternateName\":\"JGP\",\"dateModified\":\"2022-11-28T03:29:00.283Z\"}}}}");
+module.exports = JSON.parse("{\"data\":{\"site\":{\"siteMetadata\":{\"title\":\"Jordan Gass-Poore' Portfolio Site\",\"description\":\"A journalist's portfolio site\",\"url\":\"http://jgasspoore.com\",\"name\":\"Jordan Gass-Poore'\",\"twitter\":\"@jgasspoore\",\"image\":\"static/defaultOfJordan.jpg\",\"htmlDescription\":\"An HTML description\",\"givenName\":\"Jordan\",\"fbAppID\":\"\",\"familyName\":\"Gass-Poore'\",\"alternateName\":\"JGP\",\"dateModified\":\"2022-11-28T03:29:00.283Z\"}}}}");
 
 /***/ }),
 
